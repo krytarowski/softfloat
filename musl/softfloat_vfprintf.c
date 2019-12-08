@@ -42,14 +42,14 @@ static int isfinite(float64_t x)
 {
 	union {float64_t __f; uint64_t __i;} __u;
 	__u.__f = x;
-	return __u.__i & -1ULL>>1 < 0x7ffULL<<52;
+	return (__u.__i & -1ULL>>1) < 0x7ffULL<<52;
 }
 
 static int isnan(float64_t x)
 {
 	union {float64_t __f; uint64_t __i;} __u;
 	__u.__f = x;
-	return __u.__i & -1ULL>>1 > 0x7ffULL<<52;
+	return (__u.__i & -1ULL>>1) > 0x7ffULL<<52;
 }
 
 static float64_t frexp(float64_t x, int *e)
