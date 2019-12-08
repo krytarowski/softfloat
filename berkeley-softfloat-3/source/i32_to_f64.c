@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "softfloat.h"
@@ -62,4 +66,3 @@ float64_t i32_to_f64( int32_t a )
     return uZ.f;
 
 }
-

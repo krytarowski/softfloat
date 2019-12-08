@@ -37,7 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef primitiveTypes_h
 #define primitiveTypes_h 1
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdint.h>
+#endif
 
 #ifdef SOFTFLOAT_FAST_INT64
 
@@ -82,4 +86,3 @@ struct uint128_extra { struct uint128 v; uint64_t extra; };
 #endif
 
 #endif
-

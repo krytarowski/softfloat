@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "softfloat.h"
@@ -64,4 +68,3 @@ bool extF80_eq_signaling( extFloat80_t a, extFloat80_t b )
         && ((uiA64 == uiB64) || (! uiA0 && ! ((uiA64 | uiB64) & 0x7FFF)));
 
 }
-

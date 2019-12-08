@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "primitiveTypes.h"
 
@@ -53,4 +57,3 @@ struct uint128 softfloat_mul64ByShifted32To128( uint64_t a, uint32_t b )
 }
 
 #endif
-

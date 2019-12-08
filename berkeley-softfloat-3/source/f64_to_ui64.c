@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -100,4 +104,3 @@ uint_fast64_t f64_to_ui64( float64_t a, uint_fast8_t roundingMode, bool exact )
             : sign ? ui64_fromNegOverflow : ui64_fromPosOverflow;
 
 }
-

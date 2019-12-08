@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -79,4 +83,3 @@ uint_fast32_t f64_to_ui32( float64_t a, uint_fast8_t roundingMode, bool exact )
     return softfloat_roundToUI32( sign, sig, roundingMode, exact );
 
 }
-

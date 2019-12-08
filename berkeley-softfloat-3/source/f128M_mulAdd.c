@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "softfloat.h"
@@ -89,4 +93,3 @@ void
 }
 
 #endif
-

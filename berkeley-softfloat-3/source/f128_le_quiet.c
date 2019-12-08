@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -75,4 +79,3 @@ bool f128_le_quiet( float128_t a, float128_t b )
                   || (signA ^ softfloat_lt128( uiA64, uiA0, uiB64, uiB0 ));
 
 }
-

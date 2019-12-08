@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -93,4 +97,3 @@ int_fast32_t f64_to_i32_r_minMag( float64_t a, bool exact )
     return sign ? -absZ : absZ;
 
 }
-

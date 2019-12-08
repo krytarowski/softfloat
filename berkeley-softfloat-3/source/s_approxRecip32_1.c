@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 
 #ifndef softfloat_approxRecip32_1
@@ -63,4 +67,3 @@ uint32_t softfloat_approxRecip32_1( uint32_t a )
 }
 
 #endif
-

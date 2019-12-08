@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 
 #ifndef softfloat_shortShiftRightJam64
@@ -47,4 +51,3 @@ uint64_t softfloat_shortShiftRightJam64( uint64_t a, uint_fast8_t dist )
 }
 
 #endif
-

@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -85,4 +89,3 @@ uint_fast32_t f32_to_ui32_r_minMag( float32_t a, bool exact )
     return z;
 
 }
-

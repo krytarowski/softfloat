@@ -37,7 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef softfloat_types_h
 #define softfloat_types_h 1
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 
 /*----------------------------------------------------------------------------
 | Types used to pass 16-bit, 32-bit, 64-bit, and 128-bit floating-point
@@ -78,4 +82,3 @@ struct extFloat80M { uint16_t signExp; uint64_t signif; };
 typedef struct extFloat80M extFloat80_t;
 
 #endif
-

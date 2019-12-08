@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "softfloat.h"
@@ -60,4 +64,3 @@ float128_t f128_mulAdd( float128_t a, float128_t b, float128_t c )
     return softfloat_mulAddF128( uiA64, uiA0, uiB64, uiB0, uiC64, uiC0, 0 );
 
 }
-

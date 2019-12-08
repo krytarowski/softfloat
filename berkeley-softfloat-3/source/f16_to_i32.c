@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -84,4 +88,3 @@ int_fast32_t f16_to_i32( float16_t a, uint_fast8_t roundingMode, bool exact )
             sign, (uint_fast32_t) sig32, roundingMode, exact );
 
 }
-

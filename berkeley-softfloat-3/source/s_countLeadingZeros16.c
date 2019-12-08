@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 
 #ifndef softfloat_countLeadingZeros16
@@ -57,4 +61,3 @@ uint_fast8_t softfloat_countLeadingZeros16( uint16_t a )
 }
 
 #endif
-

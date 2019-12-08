@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "softfloat.h"
 
@@ -54,4 +58,3 @@ bool extF80M_isSignalingNaN( const extFloat80_t *aPtr )
             && (uiA0 & UINT64_C( 0x3FFFFFFFFFFFFFFF));
 
 }
-

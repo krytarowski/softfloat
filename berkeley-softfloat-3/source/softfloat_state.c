@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -49,4 +53,3 @@ THREAD_LOCAL uint_fast8_t softfloat_detectTininess = init_detectTininess;
 THREAD_LOCAL uint_fast8_t softfloat_exceptionFlags = 0;
 
 THREAD_LOCAL uint_fast8_t extF80_roundingPrecision = 80;
-

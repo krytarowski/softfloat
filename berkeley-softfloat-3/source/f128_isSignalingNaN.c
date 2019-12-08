@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -48,4 +52,3 @@ bool f128_isSignalingNaN( float128_t a )
     return softfloat_isSigNaNF128UI( uA.ui.v64, uA.ui.v0 );
 
 }
-

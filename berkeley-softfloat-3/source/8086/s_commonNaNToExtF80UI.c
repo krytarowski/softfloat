@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "primitives.h"
 #include "specialize.h"
@@ -53,4 +57,3 @@ struct uint128 softfloat_commonNaNToExtF80UI( const struct commonNaN *aPtr )
     return uiZ;
 
 }
-

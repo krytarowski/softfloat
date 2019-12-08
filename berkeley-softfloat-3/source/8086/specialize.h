@@ -37,8 +37,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef specialize_h
 #define specialize_h 1
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "primitiveTypes.h"
 #include "softfloat.h"
 
@@ -373,4 +377,3 @@ void
 #endif
 
 #endif
-

@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "specialize.h"
 
@@ -50,4 +54,3 @@ uint_fast64_t softfloat_commonNaNToF64UI( const struct commonNaN *aPtr )
             | aPtr->v64>>12;
 
 }
-

@@ -34,8 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL
+#include <sys/types.h>
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 #include "specialize.h"
@@ -63,4 +67,3 @@ bool f16_eq( float16_t a, float16_t b )
     return (uiA == uiB) || ! (uint16_t) ((uiA | uiB)<<1);
 
 }
-

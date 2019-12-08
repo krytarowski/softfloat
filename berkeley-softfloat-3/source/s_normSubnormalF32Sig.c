@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 #include "internals.h"
 
@@ -49,4 +53,3 @@ struct exp16_sig32 softfloat_normSubnormalF32Sig( uint_fast32_t sig )
     return z;
 
 }
-

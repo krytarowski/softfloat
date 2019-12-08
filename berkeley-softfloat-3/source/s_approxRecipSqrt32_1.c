@@ -34,7 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#ifdef _KERNEL 
+#include <sys/types.h> 
+#else
 #include <stdint.h>
+#endif
 #include "platform.h"
 
 #ifndef softfloat_approxRecipSqrt32_1
@@ -70,4 +74,3 @@ uint32_t softfloat_approxRecipSqrt32_1( unsigned int oddExpA, uint32_t a )
 }
 
 #endif
-
