@@ -17,25 +17,25 @@ __KERNEL_RCSID(0, "$NetBSD$");
 
 // libm functions
 
-static int signbit(double x)
+static int signbit(float64_t x)
 {
 	union {
-		double d;
+		float64_t d;
 		uint64_t i;
 	} y = { x };
 	return y.i>>63;
 }
 
-static int isfinite(double x)
+static int isfinite(float64_t x)
 {
-	union {double __f; uint64_t __i;} __u;
+	union {float64_t __f; uint64_t __i;} __u;
 	__u.__f = x;
 	return __u.__i & -1ULL>>1;
 }
 
-static double frexp(double x, int *e)
+static float64_t frexp(float64_t x, int *e)
 {
-	union { double d; uint64_t i; } y = { x };
+	union { float64_t d; uint64_t i; } y = { x };
 	int ee = y.i>>52 & 0x7ff;
 
 	if (!ee) {
@@ -136,7 +136,7 @@ static const unsigned char states[]['z'-'A'+1] = {
 union arg
 {
 	uintmax_t i;
-	long double f;
+	float64_t f;
 	void *p;
 };
 
@@ -159,7 +159,7 @@ static void pop_arg(union arg *arg, int type, va_list *ap)
 	break; case UMAX:	arg->i = va_arg(*ap, uintmax_t);
 	break; case PDIFF:	arg->i = va_arg(*ap, ptrdiff_t);
 	break; case UIPTR:	arg->i = (uintptr_t)va_arg(*ap, void *);
-	break; case DBL:	arg->f = va_arg(*ap, double);
+	break; case DBL:	arg->f = va_arg(*ap, float64_t);
 	}
 }
 
@@ -203,7 +203,7 @@ static char *fmt_u(uintmax_t x, char *s)
 	return s;
 }
 
-static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
+static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 {
 	uint32_t big[(DBL_MANT_DIG+28)/29 + 1          // mantissa expansion
 		+ (DBL_MAX_EXP+DBL_MANT_DIG+28+8)/9]; // exponent expansion
@@ -237,7 +237,7 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 	if (y) e2--;
 
 	if ((t|32)=='a') {
-		long double round = 8.0;
+		float64_t round = 8.0;
 		int re;
 
 		if (t&32) prefix += 9;
@@ -344,8 +344,8 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 		x = *d % i;
 		/* Are there any significant digits past j? */
 		if (x || d+1!=z) {
-			long double round = 2/DBL_EPSILON;
-			long double small;
+			float64_t round = 2/DBL_EPSILON;
+			float64_t small;
 			if ((*d/i & 1) || (i==1000000000 && d>a && (d[-1]&1)))
 				round += 2;
 			if (x<i/2) small=0x0.8p0;
