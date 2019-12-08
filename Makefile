@@ -323,6 +323,13 @@ SRCS_OTHERS = \
 
 BERKELEY_SOFTFLOAT_SRCS = ${SRCS_PRIMITIVES} ${SRCS_SPECIALIZE} ${SRCS_OTHERS}
 
-SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS}
+.PATH: musl
+
+MUSL_SRCS = \
+  softfloat_snprintf.c \
+  softfloat_vfprintf.c \
+  softfloat_vsnprintf.c
+
+SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${MUSL_SRCS}
 
 .include <bsd.kmodule.mk>
