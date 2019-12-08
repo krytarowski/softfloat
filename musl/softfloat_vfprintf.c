@@ -15,6 +15,45 @@ __KERNEL_RCSID(0, "$NetBSD$");
 #define DBL_EPSILON 0x3cb0000000000000LL
 #define DBL_MAX_EXP 1024
 
+// libm functions
+
+static int signbit(double x)
+{
+	union {
+		double d;
+		uint64_t i;
+	} y = { x };
+	return y.i>>63;
+}
+
+static int isfinite(double x)
+{
+	union {double __f; uint64_t __i;} __u;
+	__u.__f = x;
+	return __u.__i & -1ULL>>1;
+}
+
+static double frexp(double x, int *e)
+{
+	union { double d; uint64_t i; } y = { x };
+	int ee = y.i>>52 & 0x7ff;
+
+	if (!ee) {
+		if (x) {
+			x = frexp(x*0x1p64, e);
+			*e -= 64;
+		} else *e = 0;
+		return x;
+	} else if (ee == 0x7ff) {
+		return x;
+	}
+
+	*e = ee - 0x3fe;
+	y.i &= 0x800fffffffffffffull;
+	y.i |= 0x3fe0000000000000ull;
+	return y.d;
+}
+
 /* Convenient bit representation for modifier flags, which all fall
  * within 31 codepoints of the space character. */
 
@@ -194,7 +233,7 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 		return MAX(w, 3+pl);
 	}
 
-	y = frexpl(y, &e2) * 2;
+	y = frexp(y, &e2) * 2;
 	if (y) e2--;
 
 	if ((t|32)=='a') {
