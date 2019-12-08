@@ -1,20 +1,16 @@
-#include "stdio_impl.h"
-#include <errno.h>
-#include <ctype.h>
-#include <limits.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <wchar.h>
-#include <inttypes.h>
-#include <math.h>
-#include <float.h>
+#include <sys/cdefs.h>
+__KERNEL_RCSID(0, "$NetBSD$");
 
-/* Some useful macros */
+#include <sys/param.h>
+#include <sys/types.h>
+#include <sys/systm.h>
 
-#define MAX(a,b) ((a)>(b) ? (a) : (b))
-#define MIN(a,b) ((a)<(b) ? (a) : (b))
+#include "softfloat.h"
+
+#define NL_ARGMAX 9
+#define DBL_MANT_DIG 53
+#define DBL_EPSILON 0x3cb0000000000000LL
+#define DBL_MAX_EXP 1024
 
 /* Convenient bit representation for modifier flags, which all fall
  * within 31 codepoints of the space character. */
@@ -39,7 +35,7 @@ enum {
 	LONG, ULONG,
 	SHORT, USHORT, CHAR, UCHAR,
 	LLONG, SIZET, IMAX, UMAX, PDIFF, UIPTR,
-	DBL, LDBL,
+	DBL,
 	NOARG,
 	MAXSTATE
 };
@@ -79,10 +75,6 @@ static const unsigned char states[]['z'-'A'+1] = {
 		S('d') = CHAR, S('i') = CHAR,
 		S('o') = UCHAR, S('u') = UCHAR,
 		S('x') = UCHAR, S('X') = UCHAR,
-		S('n') = PTR,
-	}, { /* 5: L-prefixed */
-		S('e') = LDBL, S('f') = LDBL, S('g') = LDBL, S('a') = LDBL,
-		S('E') = LDBL, S('F') = LDBL, S('G') = LDBL, S('A') = LDBL,
 		S('n') = PTR,
 	}, { /* 6: z- or t-prefixed (assumed to be same size) */
 		S('d') = PDIFF, S('i') = PDIFF,
@@ -126,7 +118,6 @@ static void pop_arg(union arg *arg, int type, va_list *ap)
 	break; case PDIFF:	arg->i = va_arg(*ap, ptrdiff_t);
 	break; case UIPTR:	arg->i = (uintptr_t)va_arg(*ap, void *);
 	break; case DBL:	arg->f = va_arg(*ap, double);
-	break; case LDBL:	arg->f = va_arg(*ap, long double);
 	}
 }
 
@@ -170,20 +161,13 @@ static char *fmt_u(uintmax_t x, char *s)
 	return s;
 }
 
-/* Do not override this check. The floating point printing code below
- * depends on the float.h constants being right. If they are wrong, it
- * may overflow the stack. */
-#if LDBL_MANT_DIG == 53
-typedef char compiler_defines_long_double_incorrectly[9-(int)sizeof(long double)];
-#endif
-
 static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 {
-	uint32_t big[(LDBL_MANT_DIG+28)/29 + 1          // mantissa expansion
-		+ (LDBL_MAX_EXP+LDBL_MANT_DIG+28+8)/9]; // exponent expansion
+	uint32_t big[(DBL_MANT_DIG+28)/29 + 1          // mantissa expansion
+		+ (DBL_MAX_EXP+DBL_MANT_DIG+28+8)/9]; // exponent expansion
 	uint32_t *a, *d, *r, *z;
 	int e2=0, e, i, j, l;
-	char buf[9+LDBL_MANT_DIG/4], *s;
+	char buf[9+DBL_MANT_DIG/4], *s;
 	const char *prefix="-0X+0X 0X-0x+0x 0x";
 	int pl;
 	char ebuf0[3*sizeof(int)], *ebuf=&ebuf0[3*sizeof(int)], *estr;
@@ -217,11 +201,11 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 		if (t&32) prefix += 9;
 		pl += 2;
 
-		if (p<0 || p>=LDBL_MANT_DIG/4-1) re=0;
-		else re=LDBL_MANT_DIG/4-1-p;
+		if (p<0 || p>=DBL_MANT_DIG/4-1) re=0;
+		else re=DBL_MANT_DIG/4-1-p;
 
 		if (re) {
-			round *= 1<<(LDBL_MANT_DIG%4);
+			round *= 1<<(DBL_MANT_DIG%4);
 			while (re--) round*=16;
 			if (*prefix=='-') {
 				y=-y;
@@ -268,7 +252,7 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 	if (y) y *= 0x1p28, e2-=28;
 
 	if (e2<0) a=r=z=big;
-	else a=r=z=big+sizeof(big)/sizeof(*big) - LDBL_MANT_DIG - 1;
+	else a=r=z=big+sizeof(big)/sizeof(*big) - DBL_MANT_DIG - 1;
 
 	do {
 		*z = y;
@@ -289,7 +273,7 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 	}
 	while (e2<0) {
 		uint32_t carry=0, *b;
-		int sh=MIN(9,-e2), need=1+(p+LDBL_MANT_DIG/3U+8)/9;
+		int sh=MIN(9,-e2), need=1+(p+DBL_MANT_DIG/3U+8)/9;
 		for (d=a; d<z; d++) {
 			uint32_t rm = *d & (1<<sh)-1;
 			*d = (*d>>sh) + carry;
@@ -311,14 +295,14 @@ static int fmt_fp(FILE *f, long double y, int w, int p, int fl, int t)
 	if (j < 9*(z-r-1)) {
 		uint32_t x;
 		/* We avoid C's broken division of negative numbers */
-		d = r + 1 + ((j+9*LDBL_MAX_EXP)/9 - LDBL_MAX_EXP);
-		j += 9*LDBL_MAX_EXP;
+		d = r + 1 + ((j+9*DBL_MAX_EXP)/9 - DBL_MAX_EXP);
+		j += 9*DBL_MAX_EXP;
 		j %= 9;
 		for (i=10, j++; j<9; i*=10, j++);
 		x = *d % i;
 		/* Are there any significant digits past j? */
 		if (x || d+1!=z) {
-			long double round = 2/LDBL_EPSILON;
+			long double round = 2/DBL_EPSILON;
 			long double small;
 			if ((*d/i & 1) || (i==1000000000 && d>a && (d[-1]&1)))
 				round += 2;
@@ -437,7 +421,7 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 	unsigned st, ps;
 	int cnt=0, l=0;
 	size_t i;
-	char buf[sizeof(uintmax_t)*3+3+LDBL_MANT_DIG/4];
+	char buf[sizeof(uintmax_t)*3+3+DBL_MANT_DIG/4];
 	const char *prefix;
 	int t, pl;
 	wchar_t wc[2], *ws;
@@ -587,8 +571,6 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 			*(a=z-(p=1))=arg.i;
 			fl &= ~ZERO_PAD;
 			break;
-		case 'm':
-			if (1) a = strerror(errno); else
 		case 's':
 			a = arg.p ? arg.p : "(null)";
 			z = a + strnlen(a, p<0 ? INT_MAX : p);
@@ -647,10 +629,8 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 	return 1;
 
 inval:
-	errno = EINVAL;
 	return -1;
 overflow:
-	errno = EOVERFLOW;
 	return -1;
 }
 
