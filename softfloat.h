@@ -374,4 +374,10 @@ bool f128M_le_quiet( const float128_t *, const float128_t * );
 bool f128M_lt_quiet( const float128_t *, const float128_t * );
 bool f128M_isSignalingNaN( const float128_t * );
 
+/*----------------------------------------------------------------------------
+| Auxiliary functions that work with floats.
+*----------------------------------------------------------------------------*/
+int
+softfloat_snprintf(char *s, size_t n, const char *fmt, ...);
+
 #endif /* _SYS_SOFTFLOAT_H_ */
