@@ -1,0 +1,9 @@
+*.o
+*~
+*.kmod
+*~
+amd64
+i386
+x86
+machine
+softfloat.kmod.map
