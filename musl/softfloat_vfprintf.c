@@ -184,7 +184,7 @@ static void pop_arg(union arg *arg, int type, va_list *ap)
 
 static void out(FILE *f, const char *s, size_t l)
 {
-	if (!(f->flags & F_ERR)) __fwritex((void *)s, l, f);
+	if (!(f->flags & F_ERR)) softfloat___fwritex((void *)s, l, f);
 }
 
 static void pad(FILE *f, char c, int w, int l, int fl)
@@ -707,7 +707,7 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
 		f->buf_size = sizeof internal_buf;
 		f->wpos = f->wbase = f->wend = 0;
 	}
-	if (!f->wend && __towrite(f)) ret = -1;
+	if (!f->wend && softfloat___towrite(f)) ret = -1;
 	else ret = printf_core(f, fmt, &ap2, nl_arg, nl_type);
 	if (saved_buf) {
 		f->write(f, 0, 0);

@@ -328,7 +328,9 @@ BERKELEY_SOFTFLOAT_SRCS = ${SRCS_PRIMITIVES} ${SRCS_SPECIALIZE} ${SRCS_OTHERS}
 MUSL_SRCS = \
   softfloat_snprintf.c \
   softfloat_vfprintf.c \
-  softfloat_vsnprintf.c
+  softfloat_vsnprintf.c \
+  softfloat___towrite.c \
+  softfloat_fwrite.c
 
 SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${MUSL_SRCS}
 

@@ -62,7 +62,7 @@ int __stdio_close(FILE *);
 size_t __string_read(FILE *, unsigned char *, size_t);
 
 int __toread(FILE *);
-int __towrite(FILE *);
+int softfloat___towrite(FILE *);
 
 void __stdio_exit(void);
 void __stdio_exit_needed(void);
@@ -76,7 +76,7 @@ int __fseeko(FILE *, off_t, int);
 int __fseeko_unlocked(FILE *, off_t, int);
 off_t __ftello(FILE *);
 off_t __ftello_unlocked(FILE *);
-size_t __fwritex(const unsigned char *, size_t, FILE *);
+size_t softfloat___fwritex(const unsigned char *, size_t, FILE *);
 int __putc_unlocked(int, FILE *);
 
 FILE *__fdopen(int, const char *);
