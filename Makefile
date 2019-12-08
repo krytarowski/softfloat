@@ -323,6 +323,15 @@ SRCS_OTHERS = \
 
 BERKELEY_SOFTFLOAT_SRCS = ${SRCS_PRIMITIVES} ${SRCS_SPECIALIZE} ${SRCS_OTHERS}
 
+.PATH: aux
+
+AUX_SRCS = \
+  f16_isINF.c \
+  f32_isINF.c \
+  f64_isINF.c \
+  extF80M_isINF.c \
+  f128M_isINF.c
+
 .PATH: musl
 
 MUSL_SRCS = \
@@ -332,6 +341,6 @@ MUSL_SRCS = \
   softfloat___towrite.c \
   softfloat_fwrite.c
 
-SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${MUSL_SRCS}
+SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${AUX_SRCS} ${MUSL_SRCS}
 
 .include <bsd.kmodule.mk>
