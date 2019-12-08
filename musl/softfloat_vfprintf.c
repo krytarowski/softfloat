@@ -15,6 +15,18 @@ __KERNEL_RCSID(0, "$NetBSD$");
 #define DBL_EPSILON 0x3cb0000000000000LL
 #define DBL_MAX_EXP 1024
 
+static const float64_t f64const0 = {0x0LL};
+static const float64_t f64const2 = {0x4000000000000000LL};
+static const float64_t f64const8 = {0x4020000000000000LL};
+static const float64_t f64const16 = {0x4030000000000000LL};
+static const float64_t f64const1000000000 = {0x41cdcd6500000000LL};
+static const float64_t f64const0x1p64 = {0x43f0000000000000LL};
+static const float64_t f64const0x1p28 = {0x41b0000000000000LL};
+static const float64_t f64const0x0_8p0 = {0x3fe0000000000000LL};
+static const float64_t f64const0x1_0p0 = {0x3ff0000000000000LL};
+static const float64_t f64constMinus1 = {0xbff0000000000000LL};
+static const float64_t f64const2_div_epsilon = {0x4340000000000000}; // 2/DBL_EPSILON
+
 // libm functions
 
 static int signbit(float64_t x)
@@ -30,7 +42,14 @@ static int isfinite(float64_t x)
 {
 	union {float64_t __f; uint64_t __i;} __u;
 	__u.__f = x;
-	return __u.__i & -1ULL>>1;
+	return __u.__i & -1ULL>>1 < 0x7ffULL<<52;
+}
+
+static int isnan(float64_t x)
+{
+	union {float64_t __f; uint64_t __i;} __u;
+	__u.__f = x;
+	return __u.__i & -1ULL>>1 > 0x7ffULL<<52;
 }
 
 static float64_t frexp(float64_t x, int *e)
@@ -39,8 +58,8 @@ static float64_t frexp(float64_t x, int *e)
 	int ee = y.i>>52 & 0x7ff;
 
 	if (!ee) {
-		if (x) {
-			x = frexp(x*0x1p64, e);
+		if (!f64_eq(x, f64const0)) {
+			x = frexp(f64_mul(x, f64const0x1p64), e);
 			*e -= 64;
 		} else *e = 0;
 		return x;
@@ -216,7 +235,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 
 	pl=1;
 	if (signbit(y)) {
-		y=-y;
+		y=f64_mul(f64constMinus1, y);
 	} else if (fl & MARK_POS) {
 		prefix+=3;
 	} else if (fl & PAD_POS) {
@@ -225,7 +244,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 
 	if (!isfinite(y)) {
 		char *s = (t&32)?"inf":"INF";
-		if (y!=y) s=(t&32)?"nan":"NAN";
+		if (isnan(y)) s=(t&32)?"nan":"NAN";
 		pad(f, ' ', w, 3+pl, fl&~ZERO_PAD);
 		out(f, prefix, pl);
 		out(f, s, 3);
@@ -233,11 +252,11 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		return MAX(w, 3+pl);
 	}
 
-	y = frexp(y, &e2) * 2;
-	if (y) e2--;
+	y = f64_mul(frexp(y, &e2), f64const2);
+	if (!f64_eq(y, f64const0)) e2--;
 
 	if ((t|32)=='a') {
-		float64_t round = 8.0;
+		float64_t round = f64const8;
 		int re;
 
 		if (t&32) prefix += 9;
@@ -247,16 +266,16 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		else re=DBL_MANT_DIG/4-1-p;
 
 		if (re) {
-			round *= 1<<(DBL_MANT_DIG%4);
-			while (re--) round*=16;
+			f64_mul(round, f64const2 /* 1<<(DBL_MANT_DIG%4) */);
+			while (re--) f64_mul(round, f64const16);
 			if (*prefix=='-') {
-				y=-y;
-				y-=round;
-				y+=round;
-				y=-y;
+				y= f64_mul(f64constMinus1, y);
+				y= f64_sub(y, round);
+				y= f64_add(y, round);
+				y= f64_mul(y, f64constMinus1);
 			} else {
-				y+=round;
-				y-=round;
+				y= f64_add(y, round);
+				y= f64_sub(y, round);
 			}
 		}
 
@@ -267,11 +286,11 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 
 		s=buf;
 		do {
-			int x=y;
+			int x=f64_to_i32(y, softfloat_round_minMag, false);
 			*s++=xdigits[x]|(t&32);
-			y=16*(y-x);
-			if (s-buf==1 && (y||p>0||(fl&ALT_FORM))) *s++='.';
-		} while (y);
+			y=f64_mul(f64const16, (f64_sub(y, ui32_to_f64(x))));
+			if (s-buf==1 && (!f64_eq(y, f64const0)||p>0||(fl&ALT_FORM))) *s++='.';
+		} while (!f64_eq(y, f64const0));
 
 		if (p > INT_MAX-2-(ebuf-estr)-pl)
 			return -1;
@@ -291,15 +310,18 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 	}
 	if (p<0) p=6;
 
-	if (y) y *= 0x1p28, e2-=28;
+	if (!f64_eq(y, f64const0)) {
+		y = f64_mul(y, f64const0x1p28);
+		e2-= 28;
+	}
 
 	if (e2<0) a=r=z=big;
 	else a=r=z=big+sizeof(big)/sizeof(*big) - DBL_MANT_DIG - 1;
 
 	do {
-		*z = y;
-		y = 1000000000*(y-*z++);
-	} while (y);
+		*z = f64_to_ui32(y, softfloat_round_minMag, false);
+		y = f64_mul(f64const1000000000, (f64_sub(y, ui32_to_f64(*z++))));
+	} while (!f64_eq(y, f64const0));
 
 	while (e2>0) {
 		uint32_t carry=0;
@@ -344,17 +366,20 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		x = *d % i;
 		/* Are there any significant digits past j? */
 		if (x || d+1!=z) {
-			float64_t round = 2/DBL_EPSILON;
+			float64_t round = f64const2_div_epsilon;
 			float64_t small;
 			if ((*d/i & 1) || (i==1000000000 && d>a && (d[-1]&1)))
-				round += 2;
-			if (x<i/2) small=0x0.8p0;
-			else if (x==i/2 && d+1==z) small=0x1.0p0;
-			else small=0x1.8p0;
-			if (pl && *prefix=='-') round*=-1, small*=-1;
+				round = f64_add(round, f64const2);
+			if (x<i/2) small=f64const0x0_8p0;
+			else if (x==i/2 && d+1==z) small=f64const0x1_0p0;
+			else small=f64const0x0_8p0;
+			if (pl && *prefix=='-') {
+				round = f64_mul(round, f64constMinus1);
+				small = f64_mul(small, f64constMinus1);
+			}
 			*d -= x;
 			/* Decide whether to round by probing round+small */
-			if (round+small != round) {
+			if (!f64_eq(f64_add(round, small), round)) {
 				*d = *d + i;
 				while (*d > 999999999) {
 					*d--=0;

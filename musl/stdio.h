@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stdarg.h>
 
+#define EOF -1
+
 struct _IO_FILE;
 typedef struct _IO_FILE FILE;
 

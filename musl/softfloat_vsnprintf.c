@@ -1,8 +1,8 @@
 #include "stdio_impl.h"
-#include <limits.h>
-#include <string.h>
-#include <errno.h>
-#include <stdint.h>
+
+#include <sys/types.h>
+#include <sys/systm.h>
+#include <machine/limits.h>
 
 struct cookie {
 	char *s;
@@ -32,7 +32,7 @@ static size_t sn_write(FILE *f, const unsigned char *s, size_t l)
 	return l;
 }
 
-int vsnprintf(char *restrict s, size_t n, const char *restrict fmt, va_list ap)
+int softfloat_vsnprintf(char *restrict s, size_t n, const char *restrict fmt, va_list ap)
 {
 	unsigned char buf[1];
 	char dummy[1];
@@ -46,10 +46,9 @@ int vsnprintf(char *restrict s, size_t n, const char *restrict fmt, va_list ap)
 	};
 
 	if (n > INT_MAX) {
-		errno = EOVERFLOW;
 		return -1;
 	}
 
 	*c.s = 0;
-	return vfprintf(&f, fmt, ap);
+	return softfloat_vfprintf(&f, fmt, ap);
 }
