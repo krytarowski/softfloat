@@ -5,6 +5,9 @@ __KERNEL_RCSID(0, "$NetBSD$");
 #include <sys/types.h>
 #include <sys/systm.h>
 
+#include "stdio.h"
+#include "stdio_impl.h"
+
 #include "softfloat.h"
 
 #define NL_ARGMAX 9
@@ -424,7 +427,6 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 	char buf[sizeof(uintmax_t)*3+3+DBL_MANT_DIG/4];
 	const char *prefix;
 	int t, pl;
-	wchar_t wc[2], *ws;
 	char mb[4];
 
 	for (;;) {
@@ -578,24 +580,6 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 			p = z-a;
 			fl &= ~ZERO_PAD;
 			break;
-		case 'C':
-			wc[0] = arg.i;
-			wc[1] = 0;
-			arg.p = wc;
-			p = -1;
-		case 'S':
-			ws = arg.p;
-			for (i=l=0; i<p && *ws && (l=wctomb(mb, *ws++))>=0 && l<=p-i; i+=l);
-			if (l<0) return -1;
-			if (i > INT_MAX) goto overflow;
-			p = i;
-			pad(f, ' ', w, p, fl);
-			ws = arg.p;
-			for (i=0; i<0U+p && *ws && i+(l=wctomb(mb, *ws++))<=p; i+=l)
-				out(f, mb, l);
-			pad(f, ' ', w, p, fl^LEFT_ADJ);
-			l = w>p ? w : p;
-			continue;
 		case 'e': case 'f': case 'g': case 'a':
 		case 'E': case 'F': case 'G': case 'A':
 			if (xp && p<0) goto overflow;
