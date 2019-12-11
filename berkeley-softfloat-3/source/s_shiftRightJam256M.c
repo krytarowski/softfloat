@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include "platform.h"
 #include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_shiftRightJam256M
 
@@ -75,7 +76,7 @@ static
 
 void
  softfloat_shiftRightJam256M(
-     const uint64_t *aPtr, uint_fast32_t dist, uint64_t *zPtr )
+     uint64_t *aPtr, uint_fast32_t dist, uint64_t *zPtr )
 {
     uint64_t wordJam;
     uint_fast32_t wordDist;

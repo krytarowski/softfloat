@@ -40,11 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #endif
 #include "platform.h"
+#include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_countLeadingZeros64
 
 #define softfloat_countLeadingZeros64 softfloat_countLeadingZeros64
-#include "primitives.h"
 
 uint_fast8_t softfloat_countLeadingZeros64( uint64_t a )
 {

@@ -37,6 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "platform.h"
 #include "primitiveTypes.h"
+#include "primitives.h"
+
+#ifndef softfloat_addComplCarryM
+
+uint_fast8_t
 
 #ifndef softfloat_addComplCarryM
 

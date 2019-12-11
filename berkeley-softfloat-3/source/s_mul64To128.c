@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include "platform.h"
 #include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_mul64To128
 

@@ -36,11 +36,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 #include "platform.h"
+#include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_shiftRightM
 
 #define softfloat_shiftRightM softfloat_shiftRightM
-#include "primitives.h"
 
 void
  softfloat_shiftRightM(

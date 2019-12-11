@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #endif
 #include "primitives.h"
-#include "softfloat_types.h"
+#include "softfloat.h"
 
 union ui16_f16 { uint16_t ui; float16_t f; };
 union ui32_f32 { uint32_t ui; float32_t f; };

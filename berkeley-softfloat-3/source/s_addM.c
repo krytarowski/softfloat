@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "platform.h"
 #include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_addM
 

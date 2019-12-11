@@ -476,7 +476,7 @@ struct uint128_extra
 *----------------------------------------------------------------------------*/
 void
  softfloat_shiftRightJam256M(
-     const uint64_t *aPtr, uint_fast32_t dist, uint64_t *zPtr );
+     uint64_t *aPtr, uint_fast32_t dist, uint64_t *zPtr );
 #endif
 
 #ifndef softfloat_add128

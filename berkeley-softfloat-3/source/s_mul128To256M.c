@@ -40,11 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #endif
 #include "platform.h"
+#include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_mul128To256M
 
 #define softfloat_mul128To256M softfloat_mul128To256M
-#include "primitives.h"
 
 void
  softfloat_mul128To256M(
