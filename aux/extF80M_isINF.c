@@ -40,10 +40,9 @@
 #include "specialize.h"
 #include "softfloat.h"
 
-bool extF80M_isINF( const const extFloat80_t *a )
+bool extF80M_isINF( const extFloat80_t *a )
 {
     const struct extFloat80M *aSPtr;
-    union ui64_f64 uA;
     uint_fast16_t uiA;
     int_fast16_t exp;
     uint_fast64_t frac;

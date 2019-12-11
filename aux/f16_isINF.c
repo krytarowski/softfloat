@@ -40,7 +40,7 @@
 #include "specialize.h"
 #include "softfloat.h"
 
-bool f16_isINF( const const float16_t a )
+bool f16_isINF( const float16_t a )
 {
     union ui16_f16 uA;
     uint_fast16_t uiA;

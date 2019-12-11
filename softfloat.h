@@ -383,9 +383,9 @@ bool f128M_isSignalingNaN( const float128_t * );
 *----------------------------------------------------------------------------*/
 int softfloat_snprintf( char *s, size_t n, const char *fmt, ... );
 
-bool f16_isINF( const const float16_t );
-bool f32_isINF( const const float32_t );
-bool f64_isINF( const const float64_t );
+bool f16_isINF( const float16_t );
+bool f32_isINF( const float32_t );
+bool f64_isINF( const float64_t );
 bool extF80M_isINF( const extFloat80_t * );
 bool f128M_isINF( const float128_t * );
 
