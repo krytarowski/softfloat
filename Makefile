@@ -5,13 +5,17 @@
 
 KMOD=   softfloat
 
+SOFTFLOAT_DIR=		modules/softfloat
+SOURCE_DIR=		${SOFTFLOAT_DIR}/berkeley-softfloat-3/source
 SPECIALIZE_TYPE=	8086
-SOURCE_DIR=		berkeley-softfloat-3/source
 
-.PATH: ${SOURCE_DIR}
-.PATH: ${SOURCE_DIR}/${SPECIALIZE_TYPE}
+.PATH: ${S}/${SOFTFLOAT_DIR}
+.PATH: ${S}/${SOFTFLOAT_DIR}/aux
+.PATH: ${S}/${SOFTFLOAT_DIR}/musl
+.PATH: ${S}/${SOURCE_DIR}
+.PATH: ${S}/${SOURCE_DIR}/${SPECIALIZE_TYPE}
 
-CPPFLAGS+= -I${SOURCE_DIR}/${SPECIALIZE_TYPE} -I${SOURCE_DIR}/include
+CPPFLAGS+= -I${S}/${SOURCE_DIR}/include -I${S}/${SOURCE_DIR}/${SPECIALIZE_TYPE}
 
 SRCS_PRIMITIVES = \
   s_eq128.c \
@@ -341,6 +345,8 @@ MUSL_SRCS = \
   softfloat___towrite.c \
   softfloat_fwrite.c
 
-SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${AUX_SRCS} ${MUSL_SRCS}
+SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${AUX_SRCS} #FIXME ${MUSL_SRCS}
+
+WARNS=3
 
 .include <bsd.kmodule.mk>
