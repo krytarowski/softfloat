@@ -348,6 +348,10 @@ MUSL_SRCS = \
   softfloat___towrite.c \
   softfloat_fwrite.c
 
+# Musl replies on type conversion magic as it's coding style.
+# It is easier to remove the warnings than adding explicit
+# casts without breaking the logic.
+
 COPTS.softfloat_vfprintf.c+=	-Wno-sign-compare
 COPTS.softfloat_vsnprintf.c+=	-Wno-sign-compare
 COPTS.softfloat_fwrite.c+=	-Wno-sign-compare
