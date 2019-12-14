@@ -79,15 +79,6 @@ struct extFloat80M { uint16_t signExp; uint64_t signif; };
 typedef struct extFloat80M extFloat80_t;
 
 /*----------------------------------------------------------------------------
-| Software floating-point underflow tininess-detection mode.
-*----------------------------------------------------------------------------*/
-extern uint_fast8_t softfloat_detectTininess;
-enum {
-    softfloat_tininess_beforeRounding = 0,
-    softfloat_tininess_afterRounding  = 1
-};
-
-/*----------------------------------------------------------------------------
 | Software floating-point rounding mode.  (Mode "odd" is supported only if
 | SoftFloat is compiled with macro 'SOFTFLOAT_ROUND_ODD' defined.)
 *----------------------------------------------------------------------------*/
