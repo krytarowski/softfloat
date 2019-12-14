@@ -378,8 +378,8 @@ bool f128M_isSignalingNaN( const float128_t * );
 | Auxiliary functions that work with floats.
 |
 | softfloat_snprintf - snprintf with support for %f (float64_t)
-|
-| f16_isINF, f32_isINF, f64_isINF, extF80M_isINF, f128M_isINF - isinf()
+| *_isINF - isinf()
+| *_isNAN - isnan()
 *----------------------------------------------------------------------------*/
 int softfloat_snprintf( char *s, size_t n, const char *fmt, ... );
 
