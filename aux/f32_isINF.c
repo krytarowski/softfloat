@@ -40,7 +40,7 @@
 #include "specialize.h"
 #include "softfloat.h"
 
-bool f32_isINF( const const float32_t a )
+bool f32_isINF( const float32_t a )
 {
     union ui32_f32 uA;
     uint_fast32_t uiA;
