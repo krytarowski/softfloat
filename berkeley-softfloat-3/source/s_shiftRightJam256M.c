@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include "platform.h"
 #include "primitiveTypes.h"
+#include "primitives.h"
 
 #ifndef softfloat_shiftRightJam256M
 
@@ -86,7 +87,7 @@ void
     wordDist = dist>>6;
     if ( wordDist ) {
         if ( 4 < wordDist ) wordDist = 4;
-        ptr = (uint64_t *) (aPtr + indexMultiwordLo( 4, wordDist ));
+        ptr = __UNCONST(aPtr + indexMultiwordLo( 4, wordDist ));
         i = wordDist;
         do {
             wordJam = *ptr++;

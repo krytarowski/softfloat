@@ -39,7 +39,9 @@
 #include "internals.h"
 #include "softfloat.h"
 
-bool f128_isNAN( const float128_t *a )
+bool f128_isNAN( const float128_t a );
+
+bool f128_isNAN( const float128_t a )
 {
     return f128_isSignalingNaN(a);
 }

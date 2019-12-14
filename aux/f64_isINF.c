@@ -40,6 +40,8 @@
 #include "specialize.h"
 #include "softfloat.h"
 
+bool f64_isINF( const float64_t a );
+
 bool f64_isINF( const float64_t a )
 {
     union ui64_f64 uA;

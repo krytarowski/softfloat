@@ -107,7 +107,7 @@ int_fast64_t f128_to_i64_r_minMag( float128_t a, bool exact )
         *--------------------------------------------------------------------*/
         sig64 |= UINT64_C( 0x0001000000000000 );
         absZ = sig64>>shiftDist;
-        if ( exact && (sig0 || (absZ<<shiftDist != sig64)) ) {
+        if ( exact && (sig0 || ((uint_fast64_t) (absZ<<shiftDist) != sig64)) ) {
             softfloat_exceptionFlags |= softfloat_flag_inexact;
         }
     }

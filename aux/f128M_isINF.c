@@ -40,6 +40,8 @@
 #include "specialize.h"
 #include "softfloat.h"
 
+bool f128_isINF( const float128_t *a );
+
 bool f128_isINF( const float128_t *a )
 {
     union ui128_f128 uA;

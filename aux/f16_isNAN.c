@@ -39,6 +39,8 @@
 #include "internals.h"
 #include "softfloat.h"
 
+bool f16_isNAN( const float16_t a );
+
 bool f16_isNAN( const float16_t a )
 {
     return f16_isSignalingNaN(a);
