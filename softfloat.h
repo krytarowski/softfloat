@@ -389,4 +389,10 @@ bool f64_isINF( const const float64_t );
 bool extF80M_isINF( const extFloat80_t * );
 bool f128M_isINF( const float128_t * );
 
+bool f16_isNAN( const const float16_t );
+bool f32_isNAN( const const float32_t );
+bool f64_isNAN( const const float64_t );
+bool extF80M_isNAN( const extFloat80_t * );
+bool f128M_isNAN( const float128_t * );
+
 #endif /* _SYS_SOFTFLOAT_H_ */
