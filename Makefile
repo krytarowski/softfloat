@@ -1,5 +1,7 @@
 #	$NetBSD$
 
+WARNS=5
+
 .include <bsd.init.mk>
 .include <bsd.endian.mk>
 
@@ -330,7 +332,12 @@ AUX_SRCS = \
   f32_isINF.c \
   f64_isINF.c \
   extF80M_isINF.c \
-  f128M_isINF.c
+  f128M_isINF.c \
+  f16_isNAN.c \
+  f32_isNAN.c \
+  f64_isNAN.c \
+  extF80M_isNAN.c \
+  f128M_isNAN.c
 
 .PATH: musl
 
