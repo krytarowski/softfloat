@@ -8,7 +8,7 @@ size_t softfloat___fwritex(const unsigned char *restrict s, size_t l, FILE *rest
 
 	if (!f->wend && softfloat___towrite(f)) return 0;
 
-	if (l > f->wend - f->wpos) return f->write(f, s, l);
+	if (l > (size_t)(f->wend - f->wpos)) return f->write(f, s, l);
 
 	if (f->lbf >= 0) {
 		/* Match /^(.*\n|)/ */

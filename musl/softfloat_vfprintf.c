@@ -71,12 +71,12 @@ static float64_t frexp(float64_t x, int *e)
 /* Convenient bit representation for modifier flags, which all fall
  * within 31 codepoints of the space character. */
 
-#define ALT_FORM   (1U<<'#'-' ')
-#define ZERO_PAD   (1U<<'0'-' ')
-#define LEFT_ADJ   (1U<<'-'-' ')
-#define PAD_POS    (1U<<' '-' ')
-#define MARK_POS   (1U<<'+'-' ')
-#define GROUPED    (1U<<'\''-' ')
+#define ALT_FORM   (1U<<('#'-' '))
+#define ZERO_PAD   (1U<<('0'-' '))
+#define LEFT_ADJ   (1U<<('-'-' '))
+#define PAD_POS    (1U<<(' '-' '))
+#define MARK_POS   (1U<<('+'-' '))
+#define GROUPED    (1U<<('\''-' '))
 
 #define FLAGMASK (ALT_FORM|ZERO_PAD|LEFT_ADJ|PAD_POS|MARK_POS|GROUPED)
 
@@ -179,7 +179,7 @@ static void pop_arg(union arg *arg, int type, va_list *ap)
 
 static void out(FILE *f, const char *s, size_t l)
 {
-	if (!(f->flags & F_ERR)) softfloat___fwritex((void *)s, l, f);
+	if (!(f->flags & F_ERR)) softfloat___fwritex(__UNCONST(s), l, f);
 }
 
 static void pad(FILE *f, char c, int w, int l, int fl)
@@ -187,8 +187,8 @@ static void pad(FILE *f, char c, int w, int l, int fl)
 	char pad[256];
 	if (fl & (LEFT_ADJ | ZERO_PAD) || l >= w) return;
 	l = w - l;
-	memset(pad, c, l>sizeof pad ? sizeof pad : l);
-	for (; l >= sizeof pad; l -= sizeof pad)
+	memset(pad, c, (size_t)l>sizeof pad ? sizeof pad : (size_t)l);
+	for (; (size_t)l >= sizeof pad; l -= sizeof pad)
 		out(f, pad, sizeof pad);
 	out(f, pad, l);
 }
@@ -226,7 +226,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 	char buf[9+DBL_MANT_DIG/4], *s;
 	const char *prefix="-0X+0X 0X-0x+0x 0x";
 	int pl;
-	char ebuf0[3*sizeof(int)], *ebuf=&ebuf0[3*sizeof(int)], *estr;
+	char ebuf0[3*sizeof(int)], *ebuf=&ebuf0[3*sizeof(int)], *estr = NULL;
 
 	pl=1;
 	if (signbit(y)) {
@@ -238,11 +238,11 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 	} else prefix++, pl=0;
 
 	if (!isfinite(y)) {
-		char *s = (t&32)?"inf":"INF";
-		if (isnan(y)) s=(t&32)?"nan":"NAN";
+		const char *ss = (t&32)?"inf":"INF";
+		if (isnan(y)) ss=(t&32)?"nan":"NAN";
 		pad(f, ' ', w, 3+pl, fl&~ZERO_PAD);
 		out(f, prefix, pl);
-		out(f, s, 3);
+		out(f, ss, 3);
 		pad(f, ' ', w, 3+pl, fl^LEFT_ADJ);
 		return MAX(w, 3+pl);
 	}
@@ -334,7 +334,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		uint32_t carry=0, *b;
 		int sh=MIN(9,-e2), need=1+(p+DBL_MANT_DIG/3U+8)/9;
 		for (d=a; d<z; d++) {
-			uint32_t rm = *d & (1<<sh)-1;
+			uint32_t rm = *d & ((1<<sh)-1);
 			*d = (*d>>sh) + carry;
 			carry = (1000000000>>sh) * rm;
 		}
@@ -346,7 +346,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		e2+=sh;
 	}
 
-	if (a<z) for (i=10, e=9*(r-a); *a>=i; i*=10, e++);
+	if (a<z) for (i=10, e=9*(r-a); (int64_t)*a>=(int64_t)i; i*=10, e++);
 	else e=0;
 
 	/* Perform rounding: j is precision after the radix (possibly neg) */
@@ -365,8 +365,8 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 			float64_t small;
 			if ((*d/i & 1) || (i==1000000000 && d>a && (d[-1]&1)))
 				round = f64_add(round, f64const2);
-			if (x<i/2) small=f64const0x0_8p0;
-			else if (x==i/2 && d+1==z) small=f64const0x1_0p0;
+			if ((int64_t)x<(int64_t)i/2) small=f64const0x0_8p0;
+			else if ((int64_t)x==(int64_t)i/2 && d+1==z) small=f64const0x1_0p0;
 			else small=f64const0x0_8p0;
 			if (pl && *prefix=='-') {
 				round = f64_mul(round, f64constMinus1);
@@ -381,7 +381,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 					if (d<a) *--a=0;
 					(*d)++;
 				}
-				for (i=10, e=9*(r-a); *a>=i; i*=10, e++);
+				for (i=10, e=9*(r-a); (int64_t)*a>=(int64_t)i; i*=10, e++);
 			}
 		}
 		if (z>d+1) z=d+1;
@@ -430,30 +430,30 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 	if ((t|32)=='f') {
 		if (a>r) a=r;
 		for (d=a; d<=r; d++) {
-			char *s = fmt_u(*d, buf+9);
-			if (d!=a) while (s>buf) *--s='0';
-			else if (s==buf+9) *--s='0';
-			out(f, s, buf+9-s);
+			char *ss = fmt_u(*d, buf+9);
+			if (d!=a) while (ss>buf) *--ss='0';
+			else if (ss==buf+9) *--ss='0';
+			out(f, ss, buf+9-ss);
 		}
 		if (p || (fl&ALT_FORM)) out(f, ".", 1);
 		for (; d<z && p>0; d++, p-=9) {
-			char *s = fmt_u(*d, buf+9);
-			while (s>buf) *--s='0';
-			out(f, s, MIN(9,p));
+			char *ss = fmt_u(*d, buf+9);
+			while (ss>buf) *--ss='0';
+			out(f, ss, MIN(9,p));
 		}
 		pad(f, '0', p+9, 9, 0);
 	} else {
 		if (z<=a) z=a+1;
 		for (d=a; d<z && p>=0; d++) {
-			char *s = fmt_u(*d, buf+9);
-			if (s==buf+9) *--s='0';
-			if (d!=a) while (s>buf) *--s='0';
+			char *ss = fmt_u(*d, buf+9);
+			if (ss==buf+9) *--ss='0';
+			if (d!=a) while (ss>buf) *--ss='0';
 			else {
-				out(f, s++, 1);
+				out(f, ss++, 1);
 				if (p>0||(fl&ALT_FORM)) out(f, ".", 1);
 			}
-			out(f, s, MIN(buf+9-s, p));
-			p -= buf+9-s;
+			out(f, ss, MIN(buf+9-ss, p));
+			p -= buf+9-ss;
 		}
 		pad(f, '0', p+18, 18, 0);
 		out(f, estr, ebuf-estr);
@@ -467,7 +467,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 static int getint(char **s) {
 	int i;
 	for (i=0; isdigit(**s); (*s)++) {
-		if (i > INT_MAX/10U || **s-'0' > INT_MAX-10*i) i = -1;
+		if ((int64_t)i > (int64_t)INT_MAX/10U || **s-'0' > INT_MAX-10*i) i = -1;
 		else i = 10*i + (**s-'0');
 	}
 	return i;
@@ -475,7 +475,7 @@ static int getint(char **s) {
 
 static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg, int *nl_type)
 {
-	char *a, *z, *s=(char *)fmt;
+	char *a, *z, *s=__UNCONST(fmt);
 	unsigned l10n=0, fl;
 	int w, p, xp;
 	union arg arg;
@@ -486,7 +486,6 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 	char buf[sizeof(uintmax_t)*3+3+DBL_MANT_DIG/4];
 	const char *prefix;
 	int t, pl;
-	char mb[4];
 
 	for (;;) {
 		/* This error is only specified for snprintf, but since it's
@@ -516,8 +515,8 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 		}
 
 		/* Read modifier flags */
-		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<*s-' ')); s++)
-			fl |= 1U<<*s-' ';
+		for (fl=0; (unsigned)*s-' '<32 && (FLAGMASK&(1U<<(*s-' '))); s++)
+			fl |= 1U<<(*s-' ');
 
 		/* Read field width */
 		if (*s=='*') {
@@ -597,9 +596,10 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 			}
 			continue;
 		case 'p':
-			p = MAX(p, 2*sizeof(void*));
+			p = MAX(p, 2*(int)sizeof(void*));
 			t = 'x';
 			fl |= ALT_FORM;
+			/* FALLTHROUGH */
 		case 'x': case 'X':
 			a = fmt_x(arg.i, z, t&32);
 			if (arg.i && (fl & ALT_FORM)) prefix+=(t>>4), pl=2;
@@ -633,7 +633,7 @@ static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg,
 			fl &= ~ZERO_PAD;
 			break;
 		case 's':
-			a = arg.p ? arg.p : "(null)";
+			a = __UNCONST(arg.p ? arg.p : "(null)");
 			z = a + strnlen(a, p<0 ? INT_MAX : p);
 			if (p<0 && *z) goto overflow;
 			p = z-a;
