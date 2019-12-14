@@ -187,8 +187,8 @@ static void pad(FILE *f, char c, int w, int l, int fl)
 	char pad[256];
 	if (fl & (LEFT_ADJ | ZERO_PAD) || l >= w) return;
 	l = w - l;
-	memset(pad, c, (size_t)l>sizeof pad ? sizeof pad : (size_t)l);
-	for (; (size_t)l >= sizeof pad; l -= sizeof pad)
+	memset(pad, c, l>sizeof pad ? sizeof pad : l);
+	for (; l >= sizeof pad; l -= sizeof pad)
 		out(f, pad, sizeof pad);
 	out(f, pad, l);
 }
@@ -346,7 +346,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 		e2+=sh;
 	}
 
-	if (a<z) for (i=10, e=9*(r-a); (int64_t)*a>=(int64_t)i; i*=10, e++);
+	if (a<z) for (i=10, e=9*(r-a); *a>=i; i*=10, e++);
 	else e=0;
 
 	/* Perform rounding: j is precision after the radix (possibly neg) */
@@ -365,8 +365,8 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 			float64_t small;
 			if ((*d/i & 1) || (i==1000000000 && d>a && (d[-1]&1)))
 				round = f64_add(round, f64const2);
-			if ((int64_t)x<(int64_t)i/2) small=f64const0x0_8p0;
-			else if ((int64_t)x==(int64_t)i/2 && d+1==z) small=f64const0x1_0p0;
+			if (x<i/2) small=f64const0x0_8p0;
+			else if (x==i/2 && d+1==z) small=f64const0x1_0p0;
 			else small=f64const0x0_8p0;
 			if (pl && *prefix=='-') {
 				round = f64_mul(round, f64constMinus1);
@@ -381,7 +381,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 					if (d<a) *--a=0;
 					(*d)++;
 				}
-				for (i=10, e=9*(r-a); (int64_t)*a>=(int64_t)i; i*=10, e++);
+				for (i=10, e=9*(r-a); *a>=i; i*=10, e++);
 			}
 		}
 		if (z>d+1) z=d+1;
@@ -467,7 +467,7 @@ static int fmt_fp(FILE *f, float64_t y, int w, int p, int fl, int t)
 static int getint(char **s) {
 	int i;
 	for (i=0; isdigit(**s); (*s)++) {
-		if ((int64_t)i > (int64_t)INT_MAX/10U || **s-'0' > INT_MAX-10*i) i = -1;
+		if (i > INT_MAX/10U || **s-'0' > INT_MAX-10*i) i = -1;
 		else i = 10*i + (**s-'0');
 	}
 	return i;

@@ -348,6 +348,10 @@ MUSL_SRCS = \
   softfloat___towrite.c \
   softfloat_fwrite.c
 
+COPTS.softfloat_vfprintf.c+=	-Wno-sign-compare
+COPTS.softfloat_vsnprintf.c+=	-Wno-sign-compare
+COPTS.softfloat_fwrite.c+=	-Wno-sign-compare
+
 SRCS= softfloat.c ${BERKELEY_SOFTFLOAT_SRCS} ${AUX_SRCS} ${MUSL_SRCS}
 
 .include <bsd.kmodule.mk>
