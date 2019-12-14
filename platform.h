@@ -46,6 +46,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *----------------------------------------------------------------------------*/
 #define INLINE static inline
 
+// INLINE_LEVEL 0: softfloat.kmod 155kB
+// INLINE_LEVEL 1: softfloat.kmod 155kB
+// INLINE_LEVEL 2: softfloat.kmod 148kB
+// INLINE_LEVEL 3: softfloat.kmod 147kB
+// INLINE_LEVEL 4: softfloat.kmod 146kB
+// INLINE_LEVEL 5: softfloat.kmod 146kB
+
 #define SOFTFLOAT_FAST_INT64
 #define SOFTFLOAT_ROUND_ODD
 #define INLINE_LEVEL 5
