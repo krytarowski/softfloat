@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 #include "platform.h"
+#include "primitives.h"
 
 #ifndef softfloat_shiftLeftM
 
 #define softfloat_shiftLeftM softfloat_shiftLeftM
-#include "primitives.h"
 
 void
  softfloat_shiftLeftM(
@@ -88,4 +88,3 @@ void
 }
 
 #endif
-

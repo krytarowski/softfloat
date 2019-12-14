@@ -45,7 +45,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef softfloat_countLeadingZeros16
 
 #define softfloat_countLeadingZeros16 softfloat_countLeadingZeros16
-#include "primitives.h"
 
 uint_fast8_t softfloat_countLeadingZeros16( uint16_t a )
 {
