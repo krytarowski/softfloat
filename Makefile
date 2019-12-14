@@ -331,12 +331,16 @@ AUX_SRCS = \
   f16_isINF.c \
   f32_isINF.c \
   f64_isINF.c \
+  extF80_isINF.c \
   extF80M_isINF.c \
+  f128_isINF.c \
   f128M_isINF.c \
   f16_isNAN.c \
   f32_isNAN.c \
   f64_isNAN.c \
+  extF80_isNAN.c \
   extF80M_isNAN.c \
+  f128_isNAN.c \
   f128M_isNAN.c
 
 .PATH: musl
