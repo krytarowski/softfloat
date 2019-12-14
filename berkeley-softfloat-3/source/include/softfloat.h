@@ -372,4 +372,24 @@ bool f128M_le_quiet( const float128_t *, const float128_t * );
 bool f128M_lt_quiet( const float128_t *, const float128_t * );
 bool f128M_isSignalingNaN( const float128_t * );
 
+/*----------------------------------------------------------------------------
+| Auxiliary homegrown functions.
+*----------------------------------------------------------------------------*/
+
+bool f16_isINF( const float16_t );
+bool f32_isINF( const float32_t );
+bool f64_isINF( const float64_t );
+bool extF80_isINF( const extFloat80_t );
+bool extF80M_isINF( const extFloat80_t * );
+bool f128_isINF( const float128_t );
+bool f128M_isINF( const float128_t * );
+
+bool f16_isNAN( const float16_t );
+bool f32_isNAN( const float32_t );
+bool f64_isNAN( const float64_t );
+bool extF80_isNAN( const extFloat80_t );
+bool extF80M_isNAN( const extFloat80_t * );
+bool f128_isNAN( const float128_t );
+bool f128M_isNAN( const float128_t * );
+
 #endif

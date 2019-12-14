@@ -40,9 +40,6 @@
 #include "specialize.h"
 #include "softfloat.h"
 
-bool extF80_isINF( const extFloat80_t a );
-bool extF80M_isINF( const extFloat80_t *a );
-
 bool extF80_isINF( const extFloat80_t a )
 {
     return extF80M_isINF(&a);

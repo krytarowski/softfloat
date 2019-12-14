@@ -40,9 +40,6 @@
 #include "specialize.h"
 #include "softfloat.h"
 
-bool f128_isINF( const float128_t a );
-bool f128M_isINF( const float128_t *a );
-
 bool f128_isINF( const float128_t a )
 {
     return f128M_isINF(&a);

@@ -39,8 +39,6 @@
 #include "internals.h"
 #include "softfloat.h"
 
-bool extF80M_isNAN( const extFloat80_t *a );
-
 bool extF80M_isNAN( const extFloat80_t *a )
 {
     return extF80M_isSignalingNaN(a);
