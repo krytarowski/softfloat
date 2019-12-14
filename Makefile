@@ -352,7 +352,7 @@ MUSL_SRCS = \
   softfloat___towrite.c \
   softfloat_fwrite.c
 
-# Musl replies on type conversion magic as it's coding style.
+# Musl relies on type conversion magic as it's coding style.
 # It is easier to remove the warnings than adding explicit
 # casts without breaking the logic.
 
