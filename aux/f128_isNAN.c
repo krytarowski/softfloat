@@ -37,25 +37,11 @@
 #endif
 #include "platform.h"
 #include "internals.h"
-#include "specialize.h"
 #include "softfloat.h"
 
-bool f128M_isINF( const float128_t *a );
+bool f128_isNAN( const float128_t a );
 
-bool f128M_isINF( const float128_t *a )
+bool f128_isNAN( const float128_t a )
 {
-    union ui128_f128 uA;
-    uint_fast64_t uiA64, uiA0;
-    int_fast32_t exp;
-    struct uint128 frac;
-
-    uA.f = *a;
-    uiA64 = uA.ui.v64;
-    uiA0  = uA.ui.v0;
-
-    exp = expF128UI64(uiA64);
-    frac.v64 = fracF128UI64(uiA64);
-    frac.v0 = uiA0;
-
-    return ( exp == 0x7FFF ) && ( frac.v64 == UINT64_C(0) && frac.v0 == UINT64_C(0) );
+    return f128_isSignalingNaN(a);
 }
