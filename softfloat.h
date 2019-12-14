@@ -79,10 +79,8 @@ struct extFloat80M { uint16_t signExp; uint64_t signif; };
 typedef struct extFloat80M extFloat80_t;
 
 /*----------------------------------------------------------------------------
-| Software floating-point rounding mode.  (Mode "odd" is supported only if
-| SoftFloat is compiled with macro 'SOFTFLOAT_ROUND_ODD' defined.)
+| Software floating-point rounding mode.
 *----------------------------------------------------------------------------*/
-extern uint_fast8_t softfloat_roundingMode;
 enum {
     softfloat_round_near_even   = 0,
     softfloat_round_minMag      = 1,
